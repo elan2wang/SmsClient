@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2012-5-7 16:29:19 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.pmp.sms.vo.SMSCompany" table="tb_SMSCompany" schema="dbo" catalog="db_pmp2">
+        <id name="smscId" type="integer">
+            <column name="SMSC_ID" />
+            <generator class="assigned" />
+        </id>
+        <property name="smscName" type="string">
+            <column name="SMSC_Name" length="100" />
+        </property>
+        <property name="comId" type="integer">
+            <column name="Com_ID" />
+        </property>
+        <property name="smsUpUrl" type="string">
+            <column name="SMS_UpURL" length="200" />
+        </property>
+        <property name="smsDownUrl" type="string">
+            <column name="SMS_DownURL" length="200" />
+        </property>
+        <property name="username" type="string">
+            <column name="Username" length="50" />
+        </property>
+        <property name="password" type="string">
+            <column name="Password" length="50" />
+        </property>
+        <property name="extendCode" type="string">
+            <column name="ExtendCode" length="50" />
+        </property>
+        <set name="SMSSends" table="tb_SMSSend" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="SMSC_ID" />
+            </key>
+            <one-to-many class="org.pmp.sms.vo.SMSSend" />
+        </set>
+    </class>
+</hibernate-mapping>

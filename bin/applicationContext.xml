@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  
+  <bean id="propertyConfigurer" 
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>jdbc.properties</value>
+        <value>hibernate.properties</value>
+      </list>
+    </property>
+  </bean>
+  
+  <!-- dataSource declare using jdbc.properties -->
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="${database.driver}"/>
+    <property name="url" value="${database.url}"/>
+    <property name="username" value="${database.username}"/>
+    <property name="password" value="${database.password}"/>
+  </bean>
+  
+  <!-- sessionFactory declare using hibernate.properties -->
+  <bean id="sessionFactory"
+    class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+      </props>
+    </property>
+    <property name="mappingResources">
+      <list>
+        <value>org/pmp/sms/vo/SMSCompany.hbm.xml</value>
+        <value>org/pmp/sms/vo/SMSSend.hbm.xml</value>
+      </list>
+    </property>
+  </bean>
+  
+  <!-- BaseDAO Declare -->
+  <bean id="baseDAO" class="org.pmp.sms.dao.BaseDAO" />
+  
+  <bean id="smsCompanyDAO" class="org.pmp.sms.dao.SMSCompanyDAO" />
+  <bean id="smsSendDAO" class="org.pmp.sms.dao.SMSSendDAO" />
+  
+  <bean id="smsUtil" class="org.pmp.sms.sms.SmsUtil">
+    <property name="smsSendDAO" ref="smsSendDAO" />
+    <property name="smsCompanyDAO" ref="smsCompanyDAO" />
+  </bean>
+  
+  <!-- configure connectionFactory -->
+  <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+	<property name="brokerURL">
+		<value>tcp://127.0.0.1:61616</value>
+	</property>
+  </bean>
+
+  <!-- Spring JMS Template -->
+  <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+	<property name="connectionFactory">
+		<ref local="jmsFactory" />
+	</property>
+	<property name="defaultDestinationName" value="subject" />
+	<!-- distinguish the mode. YES for P2P,TRUE for publisher/subscriber  -->
+	<property name="pubSubDomain" value="true" />
+  </bean>
+
+  <!-- set the destination of the message to be sent (a message queue) -->
+  <bean id="destination" class="org.apache.activemq.command.ActiveMQTopic">
+	<!-- set the name of the message queue  -->
+	<constructor-arg index="0" value="subject" />
+  </bean>
+
+  <bean id="msgReceiver" class="org.pmp.sms.jms.JmsSubscriber">
+    <property name="smsUtil" ref="smsUtil" />
+    <property name="jmsTemplate" ref="jmsTemplate" />
+    <property name="destination" ref="destination" />
+  </bean>
+	
+</beans>

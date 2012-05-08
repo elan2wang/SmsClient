@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2012-5-7 16:29:19 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="org.pmp.sms.vo.SMSSend" table="tb_SMSSend" schema="dbo" catalog="db_pmp2">
+        <id name="smssId" type="integer">
+            <column name="SMSS_ID" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="SMSCompany" class="org.pmp.sms.vo.SMSCompany" fetch="select" lazy="false">
+            <column name="SMSC_ID" />
+        </many-to-one>
+        <property name="smssContent" type="string">
+            <column name="SMSS_Content" length="200" />
+        </property>
+        <property name="smssReceiver" type="string">
+            <column name="SMSS_Receiver" />
+        </property>
+        <property name="smssState" type="string">
+            <column name="SMSS_State" length="50"/>
+        </property>
+        <property name="smssTime" type="timestamp">
+            <column name="SMSS_Time" length="23" />
+        </property>
+        <property name="smssPerson" type="string">
+            <column name="SMSS_Person" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

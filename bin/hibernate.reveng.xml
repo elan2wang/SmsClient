@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+	<type-mapping>
+		<!-- jdbc-type is name for java.sql.Types -->
+		<!-- length, scale and precision can be used to specify the mapping precisely -->
+		<!-- the type-mappings are ordered. This mapping will be consulted last, 
+			thus overridden by the previous one if precision=1 for the column -->
+
+		<sql-type jdbc-type="DATE" hibernate-type="date" />
+		<sql-type jdbc-type="TIME" hibernate-type="time" />
+		<sql-type jdbc-type="TIMESTAMP" hibernate-type="timestamp" />
+		<sql-type jdbc-type="BIT" hibernate-type="boolean" />
+		<sql-type jdbc-type="TINYINT" hibernate-type="byte" />
+		<sql-type jdbc-type="SMALLINT" hibernate-type="short" />
+		<sql-type jdbc-type="INTEGER" hibernate-type="integer" />
+		<sql-type jdbc-type="BIGINT" hibernate-type="long" />
+		<sql-type jdbc-type="FLOAT" hibernate-type="float" />
+		<sql-type jdbc-type="DOUBLE" hibernate-type="double" />
+		<sql-type jdbc-type="NUMERIC" hibernate-type="big_decimal" />
+		<sql-type jdbc-type="CHAR" hibernate-type="string" />
+		<sql-type jdbc-type="CHAR" hibernate-type="character"
+			length="1" />
+		<sql-type jdbc-type="VARCHAR" hibernate-type="string" />
+	</type-mapping>
+	<table-filter match-name="tb_SMSCompany" match-catalog="db_pmp2"
+		match-schema="dbo" package="org.pmp.sms.vo">
+	</table-filter>
+	<table-filter match-name="tb_SMSSend" match-catalog="db_pmp2"
+		match-schema="dbo" package="org.pmp.sms.vo">
+	</table-filter>
+	
+	<table catalog="db_pmp2" schema="dbo" name="tb_SMSSend" class="SMSSend"></table>
+	<table catalog="db_pmp2" schema="dbo" name="tb_SMSCompany" class="SMSCompany"></table>
+</hibernate-reverse-engineering>
