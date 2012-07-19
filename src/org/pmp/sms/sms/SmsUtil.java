@@ -40,7 +40,7 @@ public class SmsUtil {
     private SMSSendDAO smsSendDAO;
     
     //~ Methods ========================================================================================================
-    public void SmsSend(String ids) throws Exception{
+    public void SmsSend(String ids){
 	List<Integer> list = new ArrayList<Integer>();
 	String [] ids_tmp = ids.split(",");
 	for (int i=0;i<ids_tmp.length;i++){
@@ -55,28 +55,27 @@ public class SmsUtil {
 	    SMSCompany smsc = item.getSMSCompany();
             Sms sms = null;
 	    try {
-		/* set the Sms properties */
+		/* 创建Sms对象，从smsc对象中获取信息机上行地址 */
 		sms = new Sms(smsc.getSmsUpUrl());
+		/* 设置接收人数组 */
 		String[] dest = item.getSmssReceiver().split(",");
-	        String extendCode = smsc.getExtendCode();
-	        String applicationId = smsc.getUsername();
-	        String password = smsc.getPassword();
-	        //logger.debug("dest.size="+dest.length);
-	        String res = sms.SendMessage(dest, item.getSmssContent(), extendCode, applicationId, password);
-	        //logger.debug("return message"+res);
-		/* update SMS state after sending message successfully */
-	        smsSendDAO.updateState(ids, "SUCCESS");
-	        logger.debug("message send successfully");
+	        String extCode = smsc.getExtendCode();
+	        String appID = smsc.getUsername();
+	        String psd = smsc.getPassword();
+	        /* 执行短信发送方法 */
+	        String res = sms.SendMessage(dest,item.getSmssContent(),extCode,appID,psd);
+	        if(res == null)continue;
+		/* 如果发送成功，则更新短信记录的状态 */
+		smsSendDAO.updateState(ids, "发送成功");
+		logger.info("message send successfully,smsSend ID = "+item.getSmssId());
 	    } catch (AxisFault e1) {
-		smsSendDAO.updateState(ids, "FAILED");
+		smsSendDAO.updateState(ids, "发送失败");
 		logger.error("get com.chinamobile.openmas.client.Sms object failed");
 		e1.printStackTrace();
-		throw e1;
 	    } catch (RemoteException e) {
-		smsSendDAO.updateState(ids, "FAILED");
+		smsSendDAO.updateState(ids, "发送失败");
 		logger.error("message send failed\ndestinationAddresses:"+item.getSmssReceiver()+"\nContent:"+item.getSmssContent());
 		e.printStackTrace();
-		throw e;
 	    }
 	}
     }

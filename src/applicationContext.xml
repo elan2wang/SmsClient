@@ -78,5 +78,10 @@
     <property name="jmsTemplate" ref="jmsTemplate" />
     <property name="destination" ref="destination" />
   </bean>
-	
+  
+  <bean id="commandPublisher" class="org.pmp.sms.jms.JmsPublisher">
+    <property name="jmsTemplate" ref="jmsTemplate" />
+    <property name="destination" ref="destination" />
+  </bean>
+  
 </beans>
